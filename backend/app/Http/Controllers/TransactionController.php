@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\detail_transaction;
+use App\Models\product;
 use App\Models\transaction;
+use App\Models\voucher;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Str;
 
 class TransactionController extends Controller
 {
@@ -16,25 +19,50 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'total' => 'required | numeric',
-        ]);
+        try {
+            $transactionData = array(
+                'product_transaction' => $request->product_transaction,
+                'total_cost' => $request->total_cost,
+            );
+            // dd($transactionData['product_transaction']);
+            $transactionData = $request->all();
+            if ($transactionData['total_cost'] >= 2000000) {
+                $voucher = voucher::create([
+                    'code' => Str::random(18),
+                    'user_id' => auth()->user()->id,
+                    'expired_at' => now()->addMonths(3),
+                ]);
+            }
 
-        if ($validator->fails())
+            $transaction = Transaction::create([
+                'user_id' => auth()->user()->id,
+                'total' => $request->total_cost
+            ]);
+
+            $transactionId = transaction::latest()->first()->id;
+            foreach ($transactionData['product_transaction'] as $item) {
+                $selectedProduct = product::find($item['id']);
+                $newStock = ($selectedProduct->stock) - $item['amount'];
+                $selectedProduct->update(["stock" => $newStock]);
+                $detailTransaction = detail_transaction::create([
+                    'transaction_id' => $transactionId,
+                    'product_id' => $item['id'],
+                    'total' => $item['amount']
+                ]);
+            }
+
             return response()->json([
-                'message' => 'Request Body Error',
-                'error' => $validator->errors()
-            ], 422);
+                'message' => 'Transaction Successfully Added',
+                'voucher' => $voucher,
+                'transaction' => $transaction,
+                'detail_transaction' => $detailTransaction,
+            ], 200);
 
-        $transaction = Transaction::create([
-            'user_id' => auth()->user()->id,
-            'total' => $request->total
-        ]);
-
-        return response()->json([
-            'message' => 'Transaction Successfully Added',
-            'data' => $transaction
-        ], 200);
+        } catch (e) {
+            return response()->json([
+                'message' => 'Transaction Failed',
+            ], 401);
+        }
     }
 
     public function show($id)

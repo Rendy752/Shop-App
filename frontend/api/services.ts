@@ -1,13 +1,14 @@
 import axios, { AxiosError } from 'axios';
 import { api, headers } from './axios';
+import { ProductTransactionProps } from '@/types';
 
 const ENDPOINT = {
   register: '/register',
   login: '/login',
   profile: '/profile',
   logout: '/logout',
-  products: '/products',
-  addProduct: '/products/add',
+  product: '/product',
+  transaction: '/transaction',
 };
 
 export const setRegister = async (
@@ -73,48 +74,29 @@ export const setLogout = async () => {
   }
 };
 
-export const getProducts = async () => {
+export const getAllProduct = async () => {
   try {
-    const res = await axios.get(
-      process.env.NEXT_PUBLIC_BACKEND_URL + ENDPOINT.products,
-      { headers },
-    );
+    const res = await api.get(ENDPOINT.product);
     return Promise.resolve(res.data);
   } catch (e) {
     return Promise.reject(e);
   }
 };
 
-export const addProduct = async (
-  isbn: string,
-  title: string,
-  subtitle: string,
-  author: string,
-  published: string,
-  publisher: string,
-  pages: string,
-  description: string,
-  website: string,
+export const addTransaction = async (
+  product_transaction: ProductTransactionProps[],
+  total_cost: number,
 ) => {
   try {
-    const res = await axios.post(
-      process.env.NEXT_PUBLIC_BACKEND_URL + ENDPOINT.addProduct,
-      {
-        isbn: isbn,
-        title: title,
-        subtitle: subtitle,
-        author: author,
-        published: published,
-        publisher: publisher,
-        pages: pages,
-        description: description,
-        website: website,
-      },
-      { headers },
-    );
+    const res = await api.post(ENDPOINT.transaction, {
+      product_transaction: product_transaction,
+      total_cost: total_cost,
+    });
+    console.log(res);
     return Promise.resolve(res.data);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
+      console.log(e);
       const message = e.response!.data.message;
       return Promise.reject(message);
     }
@@ -122,64 +104,30 @@ export const addProduct = async (
   }
 };
 
-export const editProduct = async (
-  id: number,
-  isbn: string,
-  title: string,
-  subtitle: string,
-  author: string,
-  published: string,
-  publisher: string,
-  pages: string,
-  description: string,
-  website: string,
-) => {
-  try {
-    const res = await axios.put(
-      process.env.NEXT_PUBLIC_BACKEND_URL + ENDPOINT.products + `/${id}/edit`,
-      {
-        isbn: isbn,
-        title: title,
-        subtitle: subtitle,
-        author: author,
-        published: published,
-        publisher: publisher,
-        pages: pages,
-        description: description,
-        website: website,
-      },
-      { headers },
-    );
-    return Promise.resolve(res.data);
-  } catch (e: unknown) {
-    if (e instanceof AxiosError) {
-      const message = e.response!.data.message;
-      return Promise.reject(message);
-    }
-    return Promise.reject(e);
+export const timeAgo = (value: any) => {
+  const seconds = Math.floor(
+    (new Date().getTime() - new Date(value).getTime()) / 1000,
+  );
+  let interval = seconds / 31536000;
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  if (interval > 1) {
+    return rtf.format(-Math.floor(interval), 'year');
   }
-};
-
-export const getSpesificProduct = async (id: number) => {
-  try {
-    const res = await axios.get(
-      process.env.NEXT_PUBLIC_BACKEND_URL + ENDPOINT.products + `/${id}`,
-      { headers },
-    );
-    return Promise.resolve(res.data);
-  } catch (e) {
-    return Promise.reject(e);
+  interval = seconds / 2592000;
+  if (interval > 1) {
+    return rtf.format(-Math.floor(interval), 'month');
   }
-};
-
-export const deleteSpesificProduct = async (id: number) => {
-  try {
-    const res = await axios.delete(
-      process.env.NEXT_PUBLIC_BACKEND_URL + ENDPOINT.products + `/${id}`,
-      { headers },
-    );
-    return Promise.resolve(res.data);
-  } catch (e) {
-    return Promise.reject(e);
+  interval = seconds / 86400;
+  if (interval > 1) {
+    return rtf.format(-Math.floor(interval), 'day');
   }
+  interval = seconds / 3600;
+  if (interval > 1) {
+    return rtf.format(-Math.floor(interval), 'hour');
+  }
+  interval = seconds / 60;
+  if (interval > 1) {
+    return rtf.format(-Math.floor(interval), 'minute');
+  }
+  return rtf.format(-Math.floor(interval), 'second');
 };

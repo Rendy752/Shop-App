@@ -39,7 +39,6 @@ export default function RootLayout({
         user.value.username = res.username;
         user.value.email = res.email;
         isLoggedIn.value = true;
-        console.log(isLoggedIn.value);
         router.replace('/product');
       } catch (e: any) {
         isLoggedIn.value = false;

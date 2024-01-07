@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreign('transaction_id')->references('id')->on('transactions')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->decimal('total');
+            $table->integer('total');
             $table->timestamps();
         });
     }
