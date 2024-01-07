@@ -13,28 +13,28 @@ class UserController extends Controller
     {
         $loginData = $request->validate([
             'email' => 'email|required',
-            'password' => 'required'
+            'password' => 'required|min:8'
         ]);
+
+        $loginData = $request->all();
         if (!auth()->attempt($loginData))
             return response()->json(['message' => 'Login Failed', 'error' => 'Username or Password Incorrect'], 401);
 
         $token = auth()->user()->createToken('token')->accessToken;
-        return response()->json(['message' => 'Login Success', 'success' => $token], 200);
+        return response()->json(['message' => 'Login Success', 'token' => $token], 200);
 
     }
 
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $registerData = $request->validate([
             'name' => 'required',
             'username' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
             'confirm_password' => 'required|same:password',
         ]);
-        if ($validator->fails()) {
-            return response()->json(['message' => 'Registration Failed', 'error' => $validator->errors()], 422);
-        }
+
         $registerData = $request->all();
         $registerData['password'] = bcrypt($registerData['password']);
         User::create($registerData);
@@ -56,7 +56,7 @@ class UserController extends Controller
     public function profile()
     {
         $profile = Auth::user();
-        return response()->json(['message' => 'Get Profile Success', 'data' => $profile], 200);
+        return response()->json(['message' => 'Get Profile Success', 'profile' => $profile], 200);
 
     }
 }
