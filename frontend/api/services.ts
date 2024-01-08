@@ -86,7 +86,15 @@ export const getAllProduct = async () => {
 export const getAllTransaction = async () => {
   try {
     const res = await api.get(ENDPOINT.transaction);
-    console.log(res);
+    return Promise.resolve(res.data.transaction);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+};
+
+export const getDetailTransaction = async (id: number) => {
+  try {
+    const res = await api.get(ENDPOINT.transaction + '/' + id);
     return Promise.resolve(res.data);
   } catch (e) {
     return Promise.reject(e);

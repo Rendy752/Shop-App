@@ -78,13 +78,24 @@ class TransactionController extends Controller
                 'message' => 'Transaction Not Found',
             ], 404);
         } else {
-            return $transaction->user_id === auth()->user()->id ?
-                response()->json([
+            if ($transaction->user_id === auth()->user()->id) {
+                $transactionDetail = detail_transaction::where('transaction_id', $id)->get();
+                foreach ($transactionDetail as $item) {
+                    $selectedProduct = product::find($item->product_id);
+                    $item->product_name = $selectedProduct->name;
+                    $item->product_price = $selectedProduct->price;
+                }
+                $voucher = voucher::where('transaction_id', $id)->get();
+                return response()->json([
                     'message' => 'Transaction Successfully Founded',
-                    'data' => $transaction
-                ], 200) : response()->json([
-                            'message' => 'Access Forbidden',
-                        ], 403);
+                    'transaction_detail' => $transactionDetail,
+                    'voucher' => $voucher,
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Access Forbidden',
+                ], 403);
+            }
         }
     }
 }

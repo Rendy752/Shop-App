@@ -26,6 +26,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/transaction', [TransactionController::class, 'index']);
     Route::post('/transaction', [TransactionController::class, 'store']);
     Route::get('/transaction/{id}', [TransactionController::class, 'show']);
+    Route::get('/detailTransaction/{id}', [TransactionController::class, 'show']);
 
     Route::delete('/logout', [UserController::class, 'logout']);
     Route::get('/profile', [UserController::class, 'profile']);

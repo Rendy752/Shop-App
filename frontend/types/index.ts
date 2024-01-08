@@ -9,6 +9,34 @@ export interface ProductProps {
   updated_at: Date;
 }
 
+export interface TransactionProps {
+  id: number;
+  user_id: number;
+  total: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface DetailTransactionProps {
+  id: number;
+  transaction_id: number;
+  product_id: number;
+  total: number;
+  created_at: Date;
+  updated_at: Date;
+  product_name: string;
+  product_price: number;
+}
+
+export interface VoucherProps {
+  id: string;
+  code: string;
+  transaction_id: number;
+  expired_at: Date;
+  created_at: Date;
+  updated_at: Date;
+}
+
 export interface ProductTransactionProps {
   id: number;
   name: string;
@@ -24,15 +52,5 @@ export interface ButtonProps {
 }
 
 export interface ErrorsProps {
-  message: string;
-}
-
-export type TUser = {
-  id: number;
-  name: string;
-  email: string;
-};
-
-export interface IError {
   message: string;
 }
