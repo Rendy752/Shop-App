@@ -6,6 +6,7 @@ import Preloader from '@/components/Preloader';
 import { headers } from '@/api/axios';
 import { SearchBar } from '@/components/SearchBar';
 import Transaction from '@/components/Transaction';
+import { isLoggedIn } from '../layout';
 
 export default function Product() {
   const [products, setProducts] = useState([]);
@@ -28,13 +29,18 @@ export default function Product() {
     handleGetProducts();
   }, []);
   return (
-    <div className="flex max-lg:flex-col border border-black rounded-md">
-      <div className="flex flex-col gap-8 text-center basis-3/4">
+    <div
+      className={`${
+        isLoggedIn.value && 'flex'
+      } justify-between gap-2 max-lg:flex-col`}
+    >
+      <div className="flex flex-col gap-8 text-center basis-3/4 border border-black rounded-md">
         <div className="flex justify-center gap-5">
           <SearchBar />
         </div>
-        {isLoading && <Preloader></Preloader>}
-        {!products.length ? (
+        {isLoading ? (
+          <Preloader></Preloader>
+        ) : !products.length ? (
           <div
             className="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3"
             role="alert"
@@ -58,7 +64,9 @@ export default function Product() {
           </div>
         )}
       </div>
-      <Transaction productTransaction={productTransaction} />
+      {isLoggedIn.value && (
+        <Transaction productTransaction={productTransaction} />
+      )}
     </div>
   );
 }

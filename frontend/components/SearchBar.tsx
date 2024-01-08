@@ -10,7 +10,7 @@ export const SearchBar = () => {
   return (
     <form
       onSubmit={handleSearch}
-      className="flex items-center justify-start max-sm:flex-col w-full relative max-sm:gap-4 max-w-3xl pt-6"
+      className="flex items-center justify-start max-sm:flex-col relative max-sm:gap-4 max-w-3xl pt-6"
     >
       <div className="relative mb-4 flex w-full flex-wrap items-stretch">
         <input

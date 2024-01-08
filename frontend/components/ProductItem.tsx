@@ -4,6 +4,7 @@ import Button from './Button';
 import { timeAgo } from '@/api/services';
 import { ClockIcon, CurrencyDollarIcon } from '@heroicons/react/16/solid';
 import toast from 'react-hot-toast';
+import { isLoggedIn } from '@/app/layout';
 
 interface ProductItemProps {
   product: ProductProps;
@@ -63,7 +64,7 @@ export default function ProductItem({
       ]);
   }, [number]);
   return (
-    <div className="my-8 rounded shadow-lg shadow-gray-200 dark:shadow-gray-900 bg-gray-600 text-white dark:bg-gray-800 duration-300 hover:-translate-y-3 hover:bg-gray-800 hover:rounded-3xl">
+    <div className="animate-show my-8 rounded shadow-lg shadow-gray-200 dark:shadow-gray-900 bg-gray-600 text-white dark:bg-gray-800 duration-300 hover:-translate-y-3 hover:bg-gray-800 hover:rounded-3xl">
       <div className="cursor-pointer">
         <figure>
           <figcaption className="p-4 flex flex-col gap-2">
@@ -82,21 +83,23 @@ export default function ProductItem({
             <p className="text-lg mb-4 font-bold leading-relaxed">
               {product.stock}
             </p>
-            <div className="flex justify-center gap-4">
-              <Button
-                title="-"
-                style="bg-red-500 py-2 px-4 rounded-md hover:bg-red-700"
-                handleClick={handleReduce}
-              ></Button>
-              <span className="bg-white py-2 px-4 rounded-md hover:bg-gray-300 text-black font-bold">
-                {number}
-              </span>
-              <Button
-                title="+"
-                style="bg-green-500 py-2 px-4 rounded-md hover:bg-green-700"
-                handleClick={handleIncrease}
-              ></Button>
-            </div>
+            {isLoggedIn.value && (
+              <div className="flex justify-center gap-4">
+                <Button
+                  title="-"
+                  style="bg-red-500 py-2 px-4 rounded-md hover:bg-red-700"
+                  handleClick={handleReduce}
+                ></Button>
+                <span className="bg-white py-2 px-4 rounded-md hover:bg-gray-300 text-black font-bold">
+                  {number}
+                </span>
+                <Button
+                  title="+"
+                  style="bg-green-500 py-2 px-4 rounded-md hover:bg-green-700"
+                  handleClick={handleIncrease}
+                ></Button>
+              </div>
+            )}
           </figcaption>
         </figure>
       </div>

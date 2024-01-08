@@ -83,6 +83,16 @@ export const getAllProduct = async () => {
   }
 };
 
+export const getAllTransaction = async () => {
+  try {
+    const res = await api.get(ENDPOINT.transaction);
+    console.log(res);
+    return Promise.resolve(res.data);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+};
+
 export const addTransaction = async (
   product_transaction: ProductTransactionProps[],
   total_cost: number,
@@ -92,11 +102,9 @@ export const addTransaction = async (
       product_transaction: product_transaction,
       total_cost: total_cost,
     });
-    console.log(res);
     return Promise.resolve(res.data);
   } catch (e: unknown) {
     if (e instanceof AxiosError) {
-      console.log(e);
       const message = e.response!.data.message;
       return Promise.reject(message);
     }

@@ -4,7 +4,6 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { signal } from '@preact/signals-react';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { headers } from '@/api/axios';
 import { getProfile } from '@/api/services';
@@ -28,7 +27,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
   useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -39,10 +37,8 @@ export default function RootLayout({
         user.value.username = res.username;
         user.value.email = res.email;
         isLoggedIn.value = true;
-        router.replace('/product');
       } catch (e: any) {
         isLoggedIn.value = false;
-        router.replace('/login');
       }
     };
     checkLogin();

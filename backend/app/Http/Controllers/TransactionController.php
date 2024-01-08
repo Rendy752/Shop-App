@@ -14,7 +14,7 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = transaction::where('user_id', auth()->user()->id)->get();
-        return response()->json(['message' => 'All Transaction Founded', 'data' => $transactions], 200);
+        return response()->json(['message' => 'All Transaction Founded', 'transaction' => $transactions], 200);
     }
 
     public function store(Request $request)
@@ -25,26 +25,32 @@ class TransactionController extends Controller
                 'total_cost' => $request->total_cost,
             );
             // dd($transactionData['product_transaction']);
-            $transactionData = $request->all();
-            if ($transactionData['total_cost'] >= 2000000) {
-                $voucher = voucher::create([
-                    'code' => Str::random(18),
-                    'user_id' => auth()->user()->id,
-                    'expired_at' => now()->addMonths(3),
-                ]);
-            }
+
+            if (empty($transactionData['product_transaction']))
+                return response()->json([
+                    'message' => 'Transaction Empty, Cannot Buy',
+                ], 422);
 
             $transaction = Transaction::create([
                 'user_id' => auth()->user()->id,
                 'total' => $request->total_cost
             ]);
-
             $transactionId = transaction::latest()->first()->id;
+
+            $transactionData = $request->all();
+            $voucher = null;
+            if ($transactionData['total_cost'] >= 2000000) {
+                $voucher = voucher::create([
+                    'code' => Str::random(18),
+                    'transaction_id' => $transactionId,
+                    'expired_at' => now()->addMonths(3),
+                ]);
+            }
             foreach ($transactionData['product_transaction'] as $item) {
                 $selectedProduct = product::find($item['id']);
                 $newStock = ($selectedProduct->stock) - $item['amount'];
                 $selectedProduct->update(["stock" => $newStock]);
-                $detailTransaction = detail_transaction::create([
+                detail_transaction::create([
                     'transaction_id' => $transactionId,
                     'product_id' => $item['id'],
                     'total' => $item['amount']
@@ -54,8 +60,7 @@ class TransactionController extends Controller
             return response()->json([
                 'message' => 'Transaction Successfully Added',
                 'voucher' => $voucher,
-                'transaction' => $transaction,
-                'detail_transaction' => $detailTransaction,
+                'transaction_id' => $transaction->id,
             ], 200);
 
         } catch (e) {

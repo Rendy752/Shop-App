@@ -13,8 +13,8 @@ return new class extends Migration {
         Schema::create('vouchers', function (Blueprint $table) {
             $table->uuid('id');
             $table->string('code');
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->integer('transaction_id')->unsigned();
+            $table->foreign('transaction_id')->references('id')->on('transactions')->cascadeOnDelete()->cascadeOnUpdate();
             $table->dateTime('expired_at');
             $table->timestamps();
         });

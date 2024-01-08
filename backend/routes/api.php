@@ -22,7 +22,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('/product', [ProductController::class, 'index']);
     Route::post('/product', [ProductController::class, 'store']);
     Route::get('/transaction', [TransactionController::class, 'index']);
     Route::post('/transaction', [TransactionController::class, 'store']);
@@ -32,5 +31,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/profile', [UserController::class, 'profile']);
 });
 
+Route::get('/product', [ProductController::class, 'index']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
