@@ -14,6 +14,7 @@ const TransactionDetail = ({ params }: { params: { id: number } }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCopy, setIsCopy] = useState(false);
   const [error, setError] = useState('');
+  const [hydrated, setHydrated] = useState(false);
   const [receipt, setReceipt] = useState<ReceiptProps>({
     message: '',
     transaction_id: 0,
@@ -23,6 +24,7 @@ const TransactionDetail = ({ params }: { params: { id: number } }) => {
   });
   useEffect(() => {
     const fetchReceipt = async () => {
+      setHydrated(true);
       try {
         setIsLoading(true);
         const res = await getDetailTransaction(params.id);
@@ -55,14 +57,18 @@ const TransactionDetail = ({ params }: { params: { id: number } }) => {
                   <div>Id: {receipt.transaction_id}</div>
                   <div>
                     Date:{' '}
-                    {receipt.transaction_date.toLocaleString().slice(0, 10)}
+                    {hydrated
+                      ? receipt.transaction_date.toLocaleString().slice(0, 10)
+                      : receipt.transaction_date.toUTCString().slice(0, 10)}
                   </div>
                 </div>
                 <div className="flex justify-between">
                   <div>Total product: {receipt.transaction_detail.length}</div>
                   <div>
                     Time:{' '}
-                    {receipt.transaction_date.toLocaleString().slice(11, 19)}
+                    {hydrated
+                      ? receipt.transaction_date.toLocaleString().slice(11, 19)
+                      : receipt.transaction_date.toUTCString().slice(11, 19)}
                   </div>
                 </div>
               </div>
@@ -100,11 +106,11 @@ const TransactionDetail = ({ params }: { params: { id: number } }) => {
                     ,-
                   </div>
                 </div>
-                <div className="bg-yellow-50 rounded-xl p-3 text-center">
-                  <div>Congrats, you receive voucher</div>
-                  <div className="font-semibold">
-                    {receipt.voucher.length &&
-                      receipt.voucher.map((item) => (
+                {receipt.voucher.length !== 0 && (
+                  <div className="bg-yellow-50 rounded-xl p-3 text-center">
+                    <div>Congrats, you receive voucher</div>
+                    <div className="font-semibold">
+                      {receipt.voucher.map((item) => (
                         <div
                           className="flex justify-center gap-3"
                           key={item.id}
@@ -126,8 +132,9 @@ const TransactionDetail = ({ params }: { params: { id: number } }) => {
                           )}
                         </div>
                       ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
               <hr className="my-3" />
               <div className="text-center">-- Thanks For Shopping --</div>

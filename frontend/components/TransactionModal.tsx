@@ -118,11 +118,11 @@ const TransactionModal = ({
                         ,-
                       </div>
                     </div>
-                    <div className="bg-yellow-50 rounded-xl p-3">
-                      <div>Congrats, you receive voucher</div>
-                      <div className="font-semibold">
-                        {receipt.voucher.length &&
-                          receipt.voucher.map((item) => (
+                    {receipt.voucher.length !== 0 && (
+                      <div className="bg-yellow-50 rounded-xl p-3">
+                        <div>Congrats, you receive voucher</div>
+                        <div className="font-semibold">
+                          {receipt.voucher.map((item) => (
                             <div
                               className="flex justify-center gap-3"
                               key={item.id}
@@ -144,8 +144,9 @@ const TransactionModal = ({
                               )}
                             </div>
                           ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                   <hr className="my-3" />
                   <div className="text-center">-- Thanks For Shopping --</div>

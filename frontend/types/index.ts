@@ -64,6 +64,10 @@ export interface ButtonProps {
   handleClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
+export interface VoucherItemProps {
+  voucher: VoucherProps;
+}
+
 export interface ErrorsProps {
   message: string;
 }

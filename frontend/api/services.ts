@@ -9,6 +9,7 @@ const ENDPOINT = {
   logout: '/logout',
   product: '/product',
   transaction: '/transaction',
+  voucher: '/voucher',
 };
 
 export const setRegister = async (
@@ -116,6 +117,15 @@ export const addTransaction = async (
       const message = e.response!.data.message;
       return Promise.reject(message);
     }
+    return Promise.reject(e);
+  }
+};
+
+export const getVoucher = async () => {
+  try {
+    const res = await api.get(ENDPOINT.voucher);
+    return Promise.resolve(res.data);
+  } catch (e) {
     return Promise.reject(e);
   }
 };

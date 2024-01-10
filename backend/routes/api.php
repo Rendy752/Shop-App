@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VoucherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/transaction', [TransactionController::class, 'store']);
     Route::get('/transaction/{id}', [TransactionController::class, 'show']);
     Route::get('/detailTransaction/{id}', [TransactionController::class, 'show']);
+    Route::get('/voucher', [VoucherController::class, 'index']);
 
     Route::delete('/logout', [UserController::class, 'logout']);
     Route::get('/profile', [UserController::class, 'profile']);
