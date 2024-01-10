@@ -1,4 +1,5 @@
 export const navbarLinks = [
+  { title: 'Home', url: '/', current: true, isNeedLogin: false },
   { title: 'Product', url: '/product', current: true, isNeedLogin: false },
   {
     title: 'Transaction',

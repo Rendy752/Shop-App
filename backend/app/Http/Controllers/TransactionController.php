@@ -88,6 +88,8 @@ class TransactionController extends Controller
                 $voucher = voucher::where('transaction_id', $id)->get();
                 return response()->json([
                     'message' => 'Transaction Successfully Founded',
+                    'transaction_id' => $transactionDetail[0]->transaction_id,
+                    'transaction_date' => $transactionDetail[0]->updated_at,
                     'transaction_detail' => $transactionDetail,
                     'voucher' => $voucher,
                 ], 200);

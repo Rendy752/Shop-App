@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { api, headers } from './axios';
 import { ProductTransactionProps } from '@/types';
 

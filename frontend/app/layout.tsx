@@ -4,7 +4,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { signal } from '@preact/signals-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { headers } from '@/api/axios';
 import { getProfile } from '@/api/services';
 import { Toaster } from 'react-hot-toast';
@@ -27,6 +27,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [showNavbar, setShowNavbar] = useState(false);
   useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -37,8 +38,10 @@ export default function RootLayout({
         user.value.username = res.username;
         user.value.email = res.email;
         isLoggedIn.value = true;
+        setShowNavbar(true);
       } catch (e: any) {
         isLoggedIn.value = false;
+        setShowNavbar(true);
       }
     };
     checkLogin();
@@ -50,7 +53,7 @@ export default function RootLayout({
       </Head>
       <body className="relative">
         <header className="sticky top-0 z-50">
-          <Navbar />
+          {showNavbar && <Navbar />}
         </header>
         <main className="m-20">
           <Toaster position="top-center" />

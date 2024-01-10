@@ -14,9 +14,15 @@ import SkeletonLoader from './SkeletonLoader';
 
 interface TransactionItemProps {
   transaction: TransactionProps;
+  setShowModal: Function;
+  setSelectedTransactionId: Function;
 }
 
-const TransactionItem = ({ transaction }: TransactionItemProps) => {
+const TransactionItem = ({
+  transaction,
+  setShowModal,
+  setSelectedTransactionId,
+}: TransactionItemProps) => {
   const [isactive, setIsActive] = useState(false);
   const [isloading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -43,7 +49,6 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
         setDetailTransaction(res.transaction_detail);
         setVoucher(res.voucher.length);
         setIsLoading(false);
-        console.log(res);
       } catch (e: any) {
         setIsLoading(false);
         setError(e);
@@ -51,7 +56,6 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
     };
     fetchDetailTransaction();
   }, []);
-  console.log(voucher);
   return (
     <div className="animate-show flex flex-col border border-black rounded-xl p-3 shadow-xl">
       {isloading ? (
@@ -71,7 +75,13 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
                     Get Voucher
                   </span>
                 )}
-                <DocumentMagnifyingGlassIcon className="h-7 w-7 cursor-pointer text-green-500 hover:text-green-700" />
+                <DocumentMagnifyingGlassIcon
+                  className="h-7 w-7 cursor-pointer text-green-500 hover:text-green-700"
+                  onClick={() => {
+                    setSelectedTransactionId(transaction.id);
+                    setShowModal(true);
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -120,12 +130,17 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
                     } flex flex-col gap-2 p-2 rounded-md`}
                     key={item.id}
                   >
-                    <span className="text-start font-bold">
-                      {item.product_name}
-                    </span>
+                    <div className="text-start font-bold flex gap-3">
+                      <CubeIcon
+                        className={`w-7 h-7 ${
+                          index % 2 != 0 ? 'text-gray-200' : 'text-gray-400'
+                        }`}
+                      />
+                      <span>{item.product_name}</span>
+                    </div>
                     <div className="flex justify-between">
                       <span>
-                        &emsp;&emsp;{item.total} X {item.product_price}
+                        &emsp;&emsp;{item.total} &times; {item.product_price}
                       </span>
                       <span>
                         Rp.{(item.product_price * item.total).toLocaleString()}

@@ -28,6 +28,11 @@ export interface DetailTransactionProps {
   product_price: number;
 }
 
+export interface TransactionModalProps {
+  setShowModal: Function;
+  selectedTransactionId: number;
+}
+
 export interface VoucherProps {
   id: string;
   code: string;
@@ -35,6 +40,14 @@ export interface VoucherProps {
   expired_at: Date;
   created_at: Date;
   updated_at: Date;
+}
+
+export interface ReceiptProps {
+  message: string;
+  transaction_id: number;
+  transaction_date: Date;
+  transaction_detail: DetailTransactionProps[];
+  voucher: VoucherProps[];
 }
 
 export interface ProductTransactionProps {

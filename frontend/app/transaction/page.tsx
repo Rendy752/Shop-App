@@ -3,12 +3,15 @@ import { getAllTransaction } from '@/api/services';
 import { Errors } from '@/components/Errors';
 import Preloader from '@/components/Preloader';
 import TransactionItem from '@/components/TransactionItem';
+import TransactionModal from '@/components/TransactionModal';
 import { TransactionProps } from '@/types';
 import React, { useEffect, useState } from 'react';
 
 const Transaction = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState<TransactionProps[]>([]);
+  const [selectedTransactionId, setSelectedTransactionId] = useState(0);
+  const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState('');
   useEffect(() => {
     const fetchTransaction = async () => {
@@ -43,11 +46,21 @@ const Transaction = () => {
           <div className="grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 lg:grid-cols-2">
             {transactions.map((transaction, index) => (
               <div key={index}>
-                <TransactionItem transaction={transaction}></TransactionItem>
+                <TransactionItem
+                  transaction={transaction}
+                  setShowModal={setShowModal}
+                  setSelectedTransactionId={setSelectedTransactionId}
+                ></TransactionItem>
               </div>
             ))}
           </div>
         </div>
+      )}
+      {showModal && (
+        <TransactionModal
+          setShowModal={setShowModal}
+          selectedTransactionId={selectedTransactionId}
+        />
       )}
     </div>
   );

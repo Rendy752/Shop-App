@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, UserIcon } from '@heroicons/react/24/outline';
@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 // import { isLoggedIn, user } from '@/app/page';
 import { navbarLinks } from '@/constants';
-import { effect } from '@preact/signals-react';
 import { isLoggedIn, user } from '@/app/layout';
 
 export default function Navbar() {
