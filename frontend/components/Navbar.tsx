@@ -20,9 +20,10 @@ export default function Navbar() {
       isLoggedIn.value = false;
       user.value.id = 0;
       user.value.name = 'Anonymous';
+      user.value.username = 'Anonymous';
       user.value.email = '';
       toast.success('Logout Success');
-      router.replace('/login');
+      router.replace('/');
     } catch (e: any) {
       return;
     }

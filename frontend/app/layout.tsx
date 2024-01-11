@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { signal } from '@preact/signals-react';
+import { effect, signal } from '@preact/signals-react';
 import { useEffect, useState } from 'react';
 import { headers } from '@/api/axios';
 import { getProfile } from '@/api/services';
@@ -28,9 +28,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [showcontent, setShowcontent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const checkLogin = async () => {
+      setIsLoading(true);
       try {
         headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
         const res = await getProfile();
@@ -39,21 +40,22 @@ export default function RootLayout({
         user.value.username = res.username;
         user.value.email = res.email;
         isLoggedIn.value = true;
-        setShowcontent(true);
       } catch (e: any) {
         isLoggedIn.value = false;
-        setShowcontent(true);
+      } finally {
+        setIsLoading(false);
       }
     };
     checkLogin();
   }, []);
+
   return (
     <html lang="en">
       <Head>
-        <link rel="shortcut icon" href="/logo.ico" />
+        <link rel="icon" href="/logo.ico" />
       </Head>
       <body className="relative">
-        {showcontent ? (
+        {!isLoading ? (
           <>
             <header className="sticky top-0 z-50">
               <Navbar />

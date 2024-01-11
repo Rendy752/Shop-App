@@ -35,7 +35,7 @@ export default function Login() {
       user.value.email = res.email;
       isLoggedIn.value = true;
       toast.success('Login Success');
-      router.push('/product');
+      router.push('/');
     } catch (e: any) {
       setIsLoading(false);
       setError(e);

@@ -14,6 +14,7 @@ export default function Footer() {
             width={118}
             height={118}
             priority={true}
+            className="w-full h-auto"
           />
           <p className="text-base">
             ShopApp 2023 <br />

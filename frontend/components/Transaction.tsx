@@ -51,18 +51,20 @@ const Transaction = ({ productTransaction }: ProductTransactionItemProps) => {
     setIsLoading(true);
     try {
       var isFound = false;
-      const res = await getVoucher();
-      setVoucher(res.data);
-      voucher.some((item) => {
-        if (item.code === voucherCode) {
-          isFound = true;
-          setIsCodeValid(true);
-          toast.success('Code is valid');
+      if (!voucherCode) {
+        toast.error('Code is empty');
+      } else {
+        voucher.some((item) => {
+          if (item.code === voucherCode) {
+            isFound = true;
+            setIsCodeValid(true);
+            toast.success('Code is valid');
+          }
+        });
+        if (!isFound) {
+          toast.error('Code not valid or already used');
+          setIsCodeValid(false);
         }
-      });
-      if (!isFound) {
-        toast.error('Code not valid or already used');
-        setIsCodeValid(false);
       }
     } catch (e: any) {
       setError(e);
@@ -71,6 +73,13 @@ const Transaction = ({ productTransaction }: ProductTransactionItemProps) => {
     }
   };
 
+  useEffect(() => {
+    const handleGetVoucher = async () => {
+      const res = await getVoucher();
+      setVoucher(res.data);
+    };
+    handleGetVoucher();
+  }, []);
   return (
     <div className="bg-gray-800 w-full basis-1/4 text-white rounded-md py-2">
       <div className="py-3 text-center font-extrabold">Transaction</div>
@@ -98,9 +107,15 @@ const Transaction = ({ productTransaction }: ProductTransactionItemProps) => {
       )}
       <div className="bg-gray-200 px-3 py-5 mt-5 text-black font-extrabold flex justify-between">
         <span>Total</span>
-        <span>
+        {isCodeValid && totalCost ? (
+          <span className="line-through animate-show text-red-500">
+            Rp.
+            {totalCost}
+          </span>
+        ) : null}
+        <span className="animate-show text-green-500">
           Rp.
-          {totalCost}
+          {isCodeValid && totalCost ? totalCost - 10000 : totalCost}
         </span>
       </div>
       <div className="flex justify-center mt-3 gap-3 p-2">
@@ -131,7 +146,7 @@ const Transaction = ({ productTransaction }: ProductTransactionItemProps) => {
       ) : (
         <Button
           title="Buy"
-          style="mt-5 me-5 float-right bg-blue-500 py-2 px-4 rounded-md hover:bg-blue-700"
+          style="mt-5 me-2 float-right bg-blue-500 py-2 px-4 rounded-md hover:bg-blue-700"
           handleClick={handleAddTransaction}
         />
       )}
