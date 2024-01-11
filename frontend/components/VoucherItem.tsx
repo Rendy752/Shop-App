@@ -7,11 +7,21 @@ import {
   ClipboardDocumentIcon,
 } from '@heroicons/react/16/solid';
 import toast from 'react-hot-toast';
+import { signal } from '@preact/signals-react';
+import Button from './Button';
+import { useRouter } from 'next/navigation';
 
+export const selectedVoucherCode = signal('');
 const VoucherItem = ({ voucher }: VoucherItemProps) => {
+  const route = useRouter();
   const [isCopy, setIsCopy] = useState(false);
+
+  const handleUseVoucher = () => {
+    selectedVoucherCode.value = voucher.code;
+    route.replace('/product');
+  };
   return (
-    <div className="flex flex-col gap-3 border border-black shadow-xl rounded-xl p-3">
+    <div className="flex flex-col gap-3 border border-black shadow-xl rounded-xl p-3 animate-show">
       <div className="flex gap-5">
         <TagIcon className="w-7 h-7 text-green-500" />
         <div>Discount 10k</div>
@@ -33,11 +43,18 @@ const VoucherItem = ({ voucher }: VoucherItemProps) => {
           />
         )}
       </div>
-      <div className="flex gap-5">
-        <CalendarDaysIcon className="w-7 h-7" />
-        <div>
-          Valid until {voucher.expired_at.toLocaleString().slice(0, 10)}
+      <div className="flex gap-5 justify-between items-center">
+        <div className="flex gap-5">
+          <CalendarDaysIcon className="w-7 h-7" />
+          <div>
+            Valid until {voucher.expired_at.toLocaleString().slice(0, 10)}
+          </div>
         </div>
+        <Button
+          title="Use"
+          style="bg-blue-500 rounded-xl py-1 px-2 hover:bg-blue-700 font-bold"
+          handleClick={handleUseVoucher}
+        />
       </div>
     </div>
   );

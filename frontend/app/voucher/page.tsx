@@ -41,7 +41,7 @@ const Voucher = () => {
       ) : (
         <div className="bg-gray-100 dark:bg-gray-900 py-10 px-3">
           <div className="font-extrabold pb-4">
-            You have {voucher.length} vouchers
+            You have {voucher.length} vouchers available
           </div>
           <div className="grid grid-flow-row gap-8 my-3 text-neutral-600 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
             {voucher.map((item, index) => (

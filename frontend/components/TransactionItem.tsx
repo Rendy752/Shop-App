@@ -30,7 +30,8 @@ const TransactionItem = ({
   const [detailTransaction, setDetailTransaction] = useState<
     DetailTransactionProps[]
   >([]);
-  const [voucher, setVoucher] = useState(0);
+  const [voucherUse, setVoucherUse] = useState(0);
+  const [voucherGet, setVoucherGet] = useState(0);
 
   const contentSpace = useRef(null);
 
@@ -47,7 +48,8 @@ const TransactionItem = ({
         setIsLoading(true);
         const res = await getDetailTransaction(transaction.id);
         setDetailTransaction(res.transaction_detail);
-        setVoucher(res.voucher.length);
+        setVoucherUse(res.voucher_use.length);
+        setVoucherGet(res.voucher_get.length);
         setIsLoading(false);
       } catch (e: any) {
         setIsLoading(false);
@@ -70,11 +72,18 @@ const TransactionItem = ({
                 <span className="">{date.slice(0, -13)}</span>
               </div>
               <div className="flex gap-2 items-center">
-                {voucher != 0 && (
-                  <span className="italic bg-yellow-200 p-1 rounded-lg shadow-md font-bold">
-                    Get Voucher
-                  </span>
-                )}
+                <div className="flex max-lg:flex-col gap-2">
+                  {voucherGet != 0 && (
+                    <span className="italic bg-yellow-200 p-1 rounded-lg shadow-md font-bold">
+                      Get Voucher
+                    </span>
+                  )}
+                  {voucherUse != 0 && (
+                    <span className="italic bg-green-200 p-1 rounded-lg shadow-md font-bold">
+                      Use 10k Voucher
+                    </span>
+                  )}
+                </div>
                 <DocumentMagnifyingGlassIcon
                   className="h-7 w-7 cursor-pointer text-green-500 hover:text-green-700"
                   onClick={() => {

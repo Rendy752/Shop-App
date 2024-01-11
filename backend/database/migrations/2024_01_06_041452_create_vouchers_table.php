@@ -15,6 +15,8 @@ return new class extends Migration {
             $table->string('code');
             $table->integer('transaction_id')->unsigned();
             $table->foreign('transaction_id')->references('id')->on('transactions')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->integer('transaction_used_id')->unsigned()->nullable();
+            $table->foreign('transaction_used_id')->references('id')->on('transactions')->cascadeOnDelete()->cascadeOnUpdate();
             $table->dateTime('expired_at');
             $table->timestamps();
         });

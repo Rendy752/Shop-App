@@ -46,8 +46,10 @@ export interface ReceiptProps {
   message: string;
   transaction_id: number;
   transaction_date: Date;
+  transaction_total: number;
   transaction_detail: DetailTransactionProps[];
-  voucher: VoucherProps[];
+  voucher_use: VoucherProps[];
+  voucher_get: VoucherProps[];
 }
 
 export interface ProductTransactionProps {

@@ -9,6 +9,7 @@ import { headers } from '@/api/axios';
 import { getProfile } from '@/api/services';
 import { Toaster } from 'react-hot-toast';
 import Head from 'next/head';
+import Preloader from '@/components/Preloader';
 
 // export const metadata: Metadata = {
 //   title: 'Shop App',
@@ -27,7 +28,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [showNavbar, setShowNavbar] = useState(false);
+  const [showcontent, setShowcontent] = useState(false);
   useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -38,10 +39,10 @@ export default function RootLayout({
         user.value.username = res.username;
         user.value.email = res.email;
         isLoggedIn.value = true;
-        setShowNavbar(true);
+        setShowcontent(true);
       } catch (e: any) {
         isLoggedIn.value = false;
-        setShowNavbar(true);
+        setShowcontent(true);
       }
     };
     checkLogin();
@@ -52,13 +53,19 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/logo.ico" />
       </Head>
       <body className="relative">
-        <header className="sticky top-0 z-50">
-          {showNavbar && <Navbar />}
-        </header>
-        <main className="m-20">
-          <Toaster position="top-center" />
-          {children}
-        </main>
+        {showcontent ? (
+          <>
+            <header className="sticky top-0 z-50">
+              <Navbar />
+            </header>
+            <main className="sm:m-8 md:m-12 lg:m-16 xl:m-20">
+              <Toaster position="top-center" />
+              {children}
+            </main>
+          </>
+        ) : (
+          <Preloader />
+        )}
         <footer>
           <Footer />
         </footer>

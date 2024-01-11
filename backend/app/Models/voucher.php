@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 class voucher extends Model
 {
     use HasFactory, HasUuids;
-    protected $fillable = ['code', 'transaction_id', 'expired_at'];
+    protected $fillable = ['code', 'transaction_id', 'transaction_used_id', 'expired_at'];
     public function transaction()
     {
-        return $this->belongsTo(transaction::class, 'transaction_id');
+        return $this->belongsTo(transaction::class, 'transaction_id', 'transaction_used_id');
     }
 }

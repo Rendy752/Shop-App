@@ -105,11 +105,13 @@ export const getDetailTransaction = async (id: number) => {
 export const addTransaction = async (
   product_transaction: ProductTransactionProps[],
   total_cost: number,
+  voucher_code: string,
 ) => {
   try {
     const res = await api.post(ENDPOINT.transaction, {
       product_transaction: product_transaction,
       total_cost: total_cost,
+      voucher_code: voucher_code,
     });
     return Promise.resolve(res.data);
   } catch (e: unknown) {

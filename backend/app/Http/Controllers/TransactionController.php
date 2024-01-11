@@ -7,6 +7,7 @@ use App\Models\product;
 use App\Models\transaction;
 use App\Models\voucher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class TransactionController extends Controller
@@ -23,9 +24,12 @@ class TransactionController extends Controller
             $transactionData = array(
                 'product_transaction' => $request->product_transaction,
                 'total_cost' => $request->total_cost,
+                'voucher_code' => $request->voucher_code,
             );
-            // dd($transactionData['product_transaction']);
+            // dd($transactionData['voucher_code']);
 
+            $isVoucherValid = voucher::join('transactions', 'transactions.id', '=', 'vouchers.transaction_id')->where('transactions.user_id', auth()->user()->id)->where('vouchers.code', $transactionData['voucher_code'])->whereDate('vouchers.expired_at', '>=', Carbon::today())->get()->count();
+            // dd($isVoucherValid);
             if (empty($transactionData['product_transaction']))
                 return response()->json([
                     'message' => 'Transaction Empty, Cannot Buy',
@@ -33,12 +37,17 @@ class TransactionController extends Controller
 
             $transaction = Transaction::create([
                 'user_id' => auth()->user()->id,
-                'total' => $request->total_cost
+                'total' => $isVoucherValid ? ($request->total_cost) - 10000 : $request->total_cost,
             ]);
             $transactionId = transaction::latest()->first()->id;
 
             $transactionData = $request->all();
             $voucher = null;
+
+            if ($isVoucherValid) {
+                voucher::where('code', $transactionData['voucher_code'])->update(['transaction_used_id' => $transactionId]);
+            }
+
             if ($transactionData['total_cost'] >= 2000000) {
                 $voucher = voucher::create([
                     'code' => Str::random(18),
@@ -85,13 +94,16 @@ class TransactionController extends Controller
                     $item->product_name = $selectedProduct->name;
                     $item->product_price = $selectedProduct->price;
                 }
-                $voucher = voucher::where('transaction_id', $id)->get();
+                $voucherGet = voucher::where('transaction_id', $id)->get();
+                $voucherUse = voucher::where('transaction_used_id', $id)->get();
                 return response()->json([
                     'message' => 'Transaction Successfully Founded',
                     'transaction_id' => $transactionDetail[0]->transaction_id,
                     'transaction_date' => $transactionDetail[0]->updated_at,
+                    'transaction_total' => $transaction->total,
                     'transaction_detail' => $transactionDetail,
-                    'voucher' => $voucher,
+                    'voucher_use' => $voucherUse,
+                    'voucher_get' => $voucherGet,
                 ], 200);
             } else {
                 return response()->json([

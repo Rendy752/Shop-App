@@ -19,8 +19,10 @@ const TransactionDetail = ({ params }: { params: { id: number } }) => {
     message: '',
     transaction_id: 0,
     transaction_date: new Date(),
+    transaction_total: 0,
     transaction_detail: [],
-    voucher: [],
+    voucher_use: [],
+    voucher_get: [],
   });
   useEffect(() => {
     const fetchReceipt = async () => {
@@ -92,7 +94,7 @@ const TransactionDetail = ({ params }: { params: { id: number } }) => {
               <hr className="my-3" />
               <div className="flex flex-col gap-3">
                 <div className="flex justify-between font-bold">
-                  <div>Total</div>
+                  <div>Sub Total</div>
                   <div>
                     Rp.
                     {receipt.transaction_detail
@@ -106,11 +108,27 @@ const TransactionDetail = ({ params }: { params: { id: number } }) => {
                     ,-
                   </div>
                 </div>
-                {receipt.voucher.length !== 0 && (
+                <div className="flex justify-between font-bold">
+                  <div>Discount</div>
+                  <div>
+                    {receipt.voucher_use.length !== 0
+                      ? 'Rp.10,000,-'
+                      : 'Rp.0,-'}
+                  </div>
+                </div>
+                <div className="flex justify-between font-bold">
+                  <div>Total</div>
+                  <div>
+                    Rp.
+                    {Math.round(receipt.transaction_total).toLocaleString()}
+                    ,-
+                  </div>
+                </div>
+                {receipt.voucher_get.length !== 0 && (
                   <div className="bg-yellow-50 rounded-xl p-3 text-center">
                     <div>Congrats, you receive voucher</div>
                     <div className="font-semibold">
-                      {receipt.voucher.map((item) => (
+                      {receipt.voucher_get.map((item) => (
                         <div
                           className="flex justify-center gap-3"
                           key={item.id}
