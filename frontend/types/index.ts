@@ -59,6 +59,28 @@ export interface ProductTransactionProps {
   amount: number;
 }
 
+export interface NavbarProps {
+  isLogin: boolean;
+  setIsLogin: Function;
+  setShowLogin: Function;
+  setShowProfile: Function;
+}
+
+export interface ProfileProps {
+  setShowProfile: Function;
+}
+
+export interface LoginProps {
+  setShowLogin: Function;
+  setShowRegister: Function;
+  setIsLogin: Function;
+}
+
+export interface RegisterProps {
+  setShowRegister: Function;
+  setShowLogin: Function;
+}
+
 export interface ButtonProps {
   title: string;
   style?: string;

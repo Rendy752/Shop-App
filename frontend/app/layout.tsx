@@ -10,6 +10,9 @@ import { getProfile } from '@/api/services';
 import { Toaster } from 'react-hot-toast';
 import Head from 'next/head';
 import Preloader from '@/components/Preloader';
+import Login from '@/components/Login';
+import Register from '@/components/Register';
+import Profile from '@/components/Profile';
 
 // export const metadata: Metadata = {
 //   title: 'Shop App',
@@ -29,6 +32,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+
   useEffect(() => {
     const checkLogin = async () => {
       setIsLoading(true);
@@ -40,8 +48,10 @@ export default function RootLayout({
         user.value.username = res.username;
         user.value.email = res.email;
         isLoggedIn.value = true;
+        setIsLogin(true);
       } catch (e: any) {
         isLoggedIn.value = false;
+        setIsLogin(false);
       } finally {
         setIsLoading(false);
       }
@@ -58,7 +68,12 @@ export default function RootLayout({
         {!isLoading ? (
           <>
             <header className="sticky top-0 z-50">
-              <Navbar />
+              <Navbar
+                isLogin={isLogin}
+                setIsLogin={setIsLogin}
+                setShowLogin={setShowLogin}
+                setShowProfile={setShowProfile}
+              />
             </header>
             <main className="sm:m-8 md:m-12 lg:m-16 xl:m-20">
               <Toaster position="top-center" />
@@ -68,6 +83,20 @@ export default function RootLayout({
         ) : (
           <Preloader />
         )}
+        {showLogin && (
+          <Login
+            setShowLogin={setShowLogin}
+            setShowRegister={setShowRegister}
+            setIsLogin={setIsLogin}
+          />
+        )}
+        {showRegister && (
+          <Register
+            setShowRegister={setShowRegister}
+            setShowLogin={setShowLogin}
+          />
+        )}
+        {showProfile && <Profile setShowProfile={setShowProfile} />}
         <footer>
           <Footer />
         </footer>

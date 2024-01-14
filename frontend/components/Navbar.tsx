@@ -7,11 +7,20 @@ import Link from 'next/link';
 import { setLogout } from '@/api/services';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-// import { isLoggedIn, user } from '@/app/page';
 import { navbarLinks } from '@/constants';
 import { isLoggedIn, user } from '@/app/layout';
+import { NavbarProps } from '@/types';
 
-export default function Navbar() {
+function classNames(...classes: any) {
+  return classes.filter(Boolean).join(' ');
+}
+
+export default function Navbar({
+  isLogin,
+  setIsLogin,
+  setShowLogin,
+  setShowProfile,
+}: NavbarProps) {
   const router = useRouter();
   const [showNavbar, setShowNavbar] = useState(true);
   const handleLogout = async () => {
@@ -22,6 +31,7 @@ export default function Navbar() {
       user.value.name = 'Anonymous';
       user.value.username = 'Anonymous';
       user.value.email = '';
+      setIsLogin(false);
       toast.success('Logout Success');
       router.replace('/');
     } catch (e: any) {
@@ -62,7 +72,7 @@ export default function Navbar() {
                     <div className="flex space-x-4">
                       {navbarLinks.map(
                         (item) =>
-                          (!item.isNeedLogin || isLoggedIn.value) && (
+                          (!item.isNeedLogin || isLogin) && (
                             <Link
                               key={item.title}
                               href={item.url}
@@ -103,34 +113,43 @@ export default function Navbar() {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      {!isLoggedIn.value ? (
+                      {!isLogin ? (
                         <Menu.Item>
                           {({ active }) => (
-                            <Link
-                              href="/login"
-                              className="block px-4 py-2 text-sm text-gray-700"
+                            <button
+                              onClick={() => setShowLogin(true)}
+                              className={classNames(
+                                active ? 'bg-gray-100' : '',
+                                'w-full text-left px-4 py-2 text-sm text-gray-700',
+                              )}
                             >
                               Login
-                            </Link>
+                            </button>
                           )}
                         </Menu.Item>
                       ) : (
                         <>
                           <Menu.Item>
                             {({ active }) => (
-                              <Link
-                                href="/profile"
-                                className="block px-4 py-2 text-sm text-gray-700"
+                              <button
+                                onClick={() => setShowProfile(true)}
+                                className={classNames(
+                                  active ? 'bg-gray-100' : '',
+                                  'w-full text-left px-4 py-2 text-sm text-gray-700',
+                                )}
                               >
                                 Profile
-                              </Link>
+                              </button>
                             )}
                           </Menu.Item>
                           <Menu.Item>
                             {({ active }) => (
                               <a
                                 onClick={handleLogout}
-                                className="block px-4 py-2 text-sm text-gray-700"
+                                className={classNames(
+                                  active ? 'bg-gray-100' : '',
+                                  'block px-4 py-2 text-sm text-gray-700',
+                                )}
                               >
                                 Logout
                               </a>
@@ -149,7 +168,7 @@ export default function Navbar() {
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navbarLinks.map(
                 (item) =>
-                  (!item.isNeedLogin || isLoggedIn.value) && (
+                  (!item.isNeedLogin || isLogin) && (
                     <Disclosure.Button
                       key={item.title}
                       as="a"
