@@ -17,13 +17,21 @@ export default function ProductItem({
   productTransaction,
   handleClick,
 }: ProductItemProps) {
-  const [number, setNumber] = useState(0);
+  const [number, setNumber] = useState(
+    productTransaction
+      .filter((item: any) => item.id === product.id)
+      .map((item: any) => item.amount)[0] ?? 0,
+  );
   const handleReduce = () => {
     if (number - 1 < 0) {
       setNumber(0);
       toast.error('Product purchase amount cannot be negative');
     } else {
-      setNumber((prev: number) => prev - 1);
+      setNumber(
+        (productTransaction
+          .filter((item: any) => item.id === product.id)
+          .map((item: any) => item.amount)[0] ?? 0) - 1,
+      );
     }
   };
   const handleIncrease = () => {
@@ -33,9 +41,14 @@ export default function ProductItem({
         `${product.name} purchase amount cannot exceed ${product.stock}`,
       );
     } else {
-      setNumber((prev: number) => prev + 1);
+      setNumber(
+        (productTransaction
+          .filter((item: any) => item.id === product.id)
+          .map((item: any) => item.amount)[0] ?? 0) + 1,
+      );
     }
   };
+
   useEffect(() => {
     var isSameItem = false;
     const newState = productTransaction.map((item: any) => {
@@ -91,7 +104,9 @@ export default function ProductItem({
                   handleClick={handleReduce}
                 ></Button>
                 <span className="bg-white py-2 px-4 rounded-md hover:bg-gray-300 text-black font-bold">
-                  {number}
+                  {productTransaction
+                    .filter((item: any) => item.id === product.id)
+                    .map((item: any) => item.amount)[0] ?? 0}
                 </span>
                 <Button
                   title="+"

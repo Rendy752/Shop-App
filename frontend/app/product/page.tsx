@@ -7,11 +7,13 @@ import { headers } from '@/api/axios';
 import { SearchBar } from '@/components/SearchBar';
 import Transaction from '@/components/Transaction';
 import { isLoggedIn } from '../layout';
+import { ProductProps } from '@/types';
 
 export default function Product() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<ProductProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [productTransaction, setProductTransaction] = useState([]);
+  const [productKeyword, setProductKeyword] = useState('');
 
   const handleGetProducts = async () => {
     try {
@@ -28,6 +30,7 @@ export default function Product() {
   useEffect(() => {
     handleGetProducts();
   }, []);
+
   return (
     <div
       className={`${
@@ -36,7 +39,10 @@ export default function Product() {
     >
       <div className="flex flex-col gap-8 text-center basis-3/4 border border-black rounded-md">
         <div className="flex justify-center gap-5">
-          <SearchBar />
+          <SearchBar
+            productKeyword={productKeyword}
+            setProductKeyword={setProductKeyword}
+          />
         </div>
         {isLoading ? (
           <Preloader />
@@ -51,15 +57,21 @@ export default function Product() {
         ) : (
           <div className="bg-gray-100 dark:bg-gray-900 py-10 px-12">
             <div className="grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-              {products.map((product, index) => (
-                <div key={index}>
-                  <ProductItem
-                    product={product}
-                    productTransaction={productTransaction}
-                    handleClick={setProductTransaction}
-                  ></ProductItem>
-                </div>
-              ))}
+              {products
+                .filter((product) =>
+                  product.name
+                    .toLowerCase()
+                    .includes(productKeyword.toLowerCase()),
+                )
+                .map((product, index) => (
+                  <div key={index}>
+                    <ProductItem
+                      product={product}
+                      productTransaction={productTransaction}
+                      handleClick={setProductTransaction}
+                    ></ProductItem>
+                  </div>
+                ))}
             </div>
           </div>
         )}

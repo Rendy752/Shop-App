@@ -28,6 +28,11 @@ export interface DetailTransactionProps {
   product_price: number;
 }
 
+export interface SearchBarProps {
+  productKeyword: string;
+  setProductKeyword: Function;
+}
+
 export interface TransactionModalProps {
   setShowModal: Function;
   selectedTransactionId: number;
