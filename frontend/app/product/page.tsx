@@ -12,7 +12,9 @@ import { ProductProps } from '@/types';
 export default function Product() {
   const [products, setProducts] = useState<ProductProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [productTransaction, setProductTransaction] = useState([]);
+  const [productTransaction, setProductTransaction] = useState(
+    JSON.parse(sessionStorage.getItem('product_transaction') || '[]'),
+  );
   const [productKeyword, setProductKeyword] = useState('');
 
   const handleGetProducts = async () => {
@@ -30,6 +32,15 @@ export default function Product() {
   useEffect(() => {
     handleGetProducts();
   }, []);
+
+  useEffect(
+    () =>
+      sessionStorage.setItem(
+        'product_transaction',
+        JSON.stringify(productTransaction),
+      ),
+    [productTransaction],
+  );
 
   return (
     <div
@@ -56,23 +67,37 @@ export default function Product() {
           </div>
         ) : (
           <div className="bg-gray-100 dark:bg-gray-900 py-10 px-12">
-            <div className="grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-              {products
-                .filter((product) =>
-                  product.name
-                    .toLowerCase()
-                    .includes(productKeyword.toLowerCase()),
-                )
-                .map((product, index) => (
-                  <div key={index}>
-                    <ProductItem
-                      product={product}
-                      productTransaction={productTransaction}
-                      handleClick={setProductTransaction}
-                    ></ProductItem>
-                  </div>
-                ))}
-            </div>
+            {products.filter((product) =>
+              product.name.toLowerCase().includes(productKeyword.toLowerCase()),
+            ).length ? (
+              <div className="grid grid-flow-row gap-8 text-neutral-600 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+                {products
+                  .filter((product) =>
+                    product.name
+                      .toLowerCase()
+                      .includes(productKeyword.toLowerCase()),
+                  )
+                  .map((product, index) => (
+                    <div key={index}>
+                      <ProductItem
+                        product={product}
+                        productTransaction={productTransaction}
+                        setProductTransaction={setProductTransaction}
+                      ></ProductItem>
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <div
+                className="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3"
+                role="alert"
+              >
+                <p className="font-bold text-xl">Information</p>
+                <p className="text-xl">
+                  Product with {productKeyword} keyword not found
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -9,13 +9,13 @@ import { isLoggedIn } from '@/app/layout';
 interface ProductItemProps {
   product: ProductProps;
   productTransaction: any;
-  handleClick: Function;
+  setProductTransaction: Function;
 }
 
 export default function ProductItem({
   product,
   productTransaction,
-  handleClick,
+  setProductTransaction,
 }: ProductItemProps) {
   const [number, setNumber] = useState(
     productTransaction
@@ -49,6 +49,15 @@ export default function ProductItem({
     }
   };
 
+  useEffect(
+    () =>
+      sessionStorage.setItem(
+        'product_transaction',
+        JSON.stringify(productTransaction),
+      ),
+    [],
+  );
+
   useEffect(() => {
     var isSameItem = false;
     const newState = productTransaction.map((item: any) => {
@@ -64,9 +73,9 @@ export default function ProductItem({
 
       return item;
     });
-    handleClick(newState);
-    if (!isSameItem)
-      handleClick((prev: any) => [
+    setProductTransaction(newState);
+    if (!isSameItem) {
+      setProductTransaction((prev: any) => [
         ...prev,
         {
           name: product.name,
@@ -75,6 +84,7 @@ export default function ProductItem({
           amount: number,
         },
       ]);
+    }
   }, [number]);
   return (
     <div className="animate-show my-8 rounded shadow-lg shadow-gray-200 dark:shadow-gray-900 bg-gray-600 text-white dark:bg-gray-800 duration-300 hover:-translate-y-3 hover:bg-gray-800 hover:rounded-3xl">

@@ -39,6 +39,7 @@ const Transaction = ({ productTransaction }: ProductTransactionItemProps) => {
       setError('');
       setIsLoading(false);
       toast.success('Transaction Success');
+      sessionStorage.removeItem('product_transaction');
       if (res.voucher) toast.success('Congrats, you receive 10k voucher');
       router.replace(`/transaction/${res.transaction_id}`);
     } catch (e: any) {
@@ -100,7 +101,7 @@ const Transaction = ({ productTransaction }: ProductTransactionItemProps) => {
                 <span>
                   {item.name} X {item.amount}
                 </span>
-                <span>{item.price * item.amount}</span>
+                <span>Rp.{(item.price * item.amount).toLocaleString()},-</span>
               </div>
             ),
         )
@@ -110,12 +111,16 @@ const Transaction = ({ productTransaction }: ProductTransactionItemProps) => {
         {isCodeValid && totalCost ? (
           <span className="line-through animate-show text-red-500">
             Rp.
-            {totalCost}
+            {totalCost.toLocaleString()},-
           </span>
         ) : null}
         <span className="animate-show text-green-500">
           Rp.
-          {isCodeValid && totalCost ? totalCost - 10000 : totalCost}
+          {(isCodeValid && totalCost
+            ? totalCost - 10000
+            : totalCost
+          ).toLocaleString()}
+          ,-
         </span>
       </div>
       <div className="flex justify-center mt-3 gap-3 p-2">
