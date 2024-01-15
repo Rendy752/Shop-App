@@ -22,11 +22,11 @@ export default function Login({
 
   const handleSignIn = async (e: any) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      await setLogin(email, password);
+      const loginRes = await setLogin(email, password);
       setError('');
-      setIsLoading(false);
+      localStorage.setItem('token', loginRes.token);
       headers.Authorization = `Bearer ${
         typeof window !== 'undefined'
           ? window.localStorage.getItem('token')
@@ -42,8 +42,9 @@ export default function Login({
       toast.success('Login Success');
       setShowLogin(false);
     } catch (e: any) {
-      setIsLoading(false);
       setError(e);
+    } finally {
+      setIsLoading(false);
     }
   };
 

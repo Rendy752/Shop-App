@@ -89,6 +89,10 @@ export const getAllTransaction = async () => {
     const res = await api.get(ENDPOINT.transaction);
     return Promise.resolve(res.data.transaction);
   } catch (e) {
+    if (e instanceof AxiosError) {
+      const message = e.response!.data.message;
+      return Promise.reject(`${message} or please refresh page`);
+    }
     return Promise.reject(e);
   }
 };
@@ -128,6 +132,10 @@ export const getVoucher = async () => {
     const res = await api.get(ENDPOINT.voucher);
     return Promise.resolve(res.data);
   } catch (e) {
+    if (e instanceof AxiosError) {
+      const message = e.response!.data.message;
+      return Promise.reject(`${message} or please refresh page`);
+    }
     return Promise.reject(e);
   }
 };
