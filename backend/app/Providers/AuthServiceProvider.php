@@ -23,6 +23,18 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+        // Write the Passport keys to storage
+        if (!file_exists(storage_path('oauth-private.key'))) {
+            file_put_contents(storage_path('oauth-private.key'), str_replace('\\n', "\n", env('PASSPORT_PRIVATE_KEY')));
+        }
+
+        if (!file_exists(storage_path('oauth-public.key'))) {
+            file_put_contents(storage_path('oauth-public.key'), str_replace('\\n', "\n", env('PASSPORT_PUBLIC_KEY')));
+        }
+
+        Passport::loadKeysFrom(storage_path());
+
+        Passport::routes();
         Passport::personalAccessTokensExpireIn(now()->addDays(3));
     }
 }
