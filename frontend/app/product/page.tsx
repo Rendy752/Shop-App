@@ -12,9 +12,7 @@ import { ProductProps } from '@/types';
 export default function Product() {
   const [products, setProducts] = useState<ProductProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [productTransaction, setProductTransaction] = useState(
-    JSON.parse(sessionStorage.getItem('product_transaction') || '[]'),
-  );
+  const [productTransaction, setProductTransaction] = useState([]);
   const [productKeyword, setProductKeyword] = useState('');
 
   const handleGetProducts = async () => {
@@ -30,6 +28,12 @@ export default function Product() {
     }
   };
   useEffect(() => {
+    const storedProductTransaction = sessionStorage.getItem(
+      'product_transaction',
+    );
+    if (storedProductTransaction) {
+      setProductTransaction(JSON.parse(storedProductTransaction));
+    }
     handleGetProducts();
   }, []);
 
